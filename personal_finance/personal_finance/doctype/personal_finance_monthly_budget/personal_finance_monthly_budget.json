@@ -25,7 +25,9 @@
   "total_expenses",
   "outstanding_expenses",
   "current_bank_balance",
-  "available_balance"
+  "available_balance",
+  "section_break_lqxj",
+  "payment_calendar"
  ],
  "fields": [
   {
@@ -162,12 +164,21 @@
    "label": "Outstanding Expenses",
    "precision": "2",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_lqxj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "payment_calendar",
+   "fieldtype": "HTML",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-25 14:15:51.644359",
+ "modified": "2026-05-25 14:51:06.722281",
  "modified_by": "Administrator",
  "module": "Personal Finance",
  "name": "Personal Finance Monthly Budget",

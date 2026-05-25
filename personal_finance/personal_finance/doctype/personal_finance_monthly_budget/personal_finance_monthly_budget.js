@@ -228,6 +228,7 @@ frappe.ui.form.on("Personal Finance Monthly Budget", {
 
         frm.trigger("set_period_preview");
         frm.trigger("schedule_total_recalculation");
+        frm.trigger("render_payment_calendar");
     },
 
     before_save(frm) {
@@ -236,10 +237,12 @@ frappe.ui.form.on("Personal Finance Monthly Budget", {
 
     year(frm) {
         frm.trigger("set_period_preview");
+        frm.trigger("render_payment_calendar");
     },
 
     month(frm) {
         frm.trigger("set_period_preview");
+        frm.trigger("render_payment_calendar");
     },
 
     current_bank_balance(frm) {
@@ -315,6 +318,7 @@ frappe.ui.form.on("Personal Finance Monthly Budget", {
                 }
 
                 frm.trigger("schedule_total_recalculation");
+                frm.trigger("render_payment_calendar");
             },
         });
     },
@@ -384,6 +388,8 @@ frappe.ui.form.on("Personal Finance Monthly Budget", {
                         }
                     }
                 });
+
+                frm.trigger("render_payment_calendar");
             },
         });
     },
@@ -418,6 +424,7 @@ frappe.ui.form.on("Personal Finance Monthly Budget", {
         });
 
         frm.refresh_field("expenses");
+        frm.trigger("render_payment_calendar");
     },
 
     load_assets_snapshot(frm, rows) {
@@ -463,6 +470,352 @@ frappe.ui.form.on("Personal Finance Monthly Budget", {
 
         frm.refresh_field("debts");
     },
+
+    render_payment_calendar(frm) {
+        const field = frm.fields_dict.payment_calendar;
+
+        if (!field || !field.$wrapper) {
+            return;
+        }
+
+        frm.trigger("add_payment_calendar_styles");
+
+        if (!frm.doc.year || !frm.doc.month_number) {
+            field.$wrapper.html(`
+                <div class="pf-payment-calendar-empty">
+                    ${__("Select a year and month to show the payment calendar.")}
+                </div>
+            `);
+            return;
+        }
+
+        const year = cint(frm.doc.year);
+        const month_number = cint(frm.doc.month_number);
+        const month_name = frm.doc.month || "";
+        const days_in_month = new Date(year, month_number, 0).getDate();
+
+        const first_day = new Date(year, month_number - 1, 1);
+        const start_offset = (first_day.getDay() + 6) % 7; // Monday-first calendar
+
+        const expenses_by_day = {};
+        let month_total = 0;
+        let outstanding_total = 0;
+        let paid_total = 0;
+
+        (frm.doc.expenses || []).forEach((row) => {
+            if (!row.payment_date) {
+                return;
+            }
+
+            const date_obj = frappe.datetime.str_to_obj(row.payment_date);
+
+            if (!date_obj) {
+                return;
+            }
+
+            const row_year = date_obj.getFullYear();
+            const row_month = date_obj.getMonth() + 1;
+
+            if (row_year !== year || row_month !== month_number) {
+                return;
+            }
+
+            const day = date_obj.getDate();
+            const amount = flt(row.expense_amount);
+
+            if (!expenses_by_day[day]) {
+                expenses_by_day[day] = [];
+            }
+
+            expenses_by_day[day].push({
+                item: row.expense_item || __("Unspecified"),
+                amount: amount,
+                payment_made: cint(row.payment_made),
+                payment_actual_date: row.payment_actual_date,
+            });
+
+            month_total += amount;
+
+            if (row.payment_made) {
+                paid_total += amount;
+            } else {
+                outstanding_total += amount;
+            }
+        });
+
+        let html = `
+            <div class="pf-payment-calendar">
+                <div class="pf-payment-calendar-header">
+                    <div>
+                        <div class="pf-payment-calendar-title">${month_name} ${year}</div>
+                        <div class="pf-payment-calendar-subtitle">
+                            ${__("Expected payments based on the Expenses table")}
+                        </div>
+                    </div>
+
+                    <div class="pf-payment-calendar-totals">
+                        <div><span>${__("Scheduled")}</span><strong>${format_currency(month_total)}</strong></div>
+                        <div><span>${__("Paid")}</span><strong>${format_currency(paid_total)}</strong></div>
+                        <div><span>${__("Outstanding")}</span><strong>${format_currency(outstanding_total)}</strong></div>
+                    </div>
+                </div>
+
+                <div class="pf-payment-calendar-grid pf-payment-calendar-weekdays">
+                    <div>${__("Mon")}</div>
+                    <div>${__("Tue")}</div>
+                    <div>${__("Wed")}</div>
+                    <div>${__("Thu")}</div>
+                    <div>${__("Fri")}</div>
+                    <div>${__("Sat")}</div>
+                    <div>${__("Sun")}</div>
+                </div>
+
+                <div class="pf-payment-calendar-grid">
+        `;
+
+        for (let i = 0; i < start_offset; i++) {
+            html += `<div class="pf-payment-calendar-day empty"></div>`;
+        }
+
+        for (let day = 1; day <= days_in_month; day++) {
+            const rows = expenses_by_day[day] || [];
+            const day_total = rows.reduce((total, row) => total + flt(row.amount), 0);
+
+            html += `
+                <div class="pf-payment-calendar-day ${rows.length ? "has-payments" : ""}">
+                    <div class="pf-payment-calendar-day-number">
+                        <span>${day}</span>
+                        ${
+                            rows.length
+                                ? `<strong>${format_currency(day_total)}</strong>`
+                                : ""
+                        }
+                    </div>
+            `;
+
+            rows.forEach((row) => {
+                html += `
+                    <div class="pf-payment-calendar-item ${row.payment_made ? "paid" : "unpaid"}">
+                        <div class="pf-payment-calendar-item-main">
+                            <span class="pf-payment-calendar-item-label">
+                                ${frappe.utils.escape_html(row.item)}
+                            </span>
+                            <span class="pf-payment-calendar-item-amount">
+                                ${format_currency(row.amount)}
+                            </span>
+                        </div>
+                        <div class="pf-payment-calendar-item-status">
+                            ${row.payment_made ? __("Paid") : __("Outstanding")}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+        }
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        field.$wrapper.html(html);
+    },
+
+    add_payment_calendar_styles(frm) {
+        if ($("#personal-finance-payment-calendar-styles").length) {
+            return;
+        }
+
+        $("<style>")
+            .attr("id", "personal-finance-payment-calendar-styles")
+            .html(`
+                .pf-payment-calendar {
+                    margin-top: 12px;
+                    background: var(--card-bg);
+                    border: 1px solid var(--border-color);
+                    border-radius: 14px;
+                    padding: 16px;
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .pf-payment-calendar-header {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 16px;
+                    align-items: flex-start;
+                    margin-bottom: 16px;
+                    flex-wrap: wrap;
+                }
+
+                .pf-payment-calendar-title {
+                    font-size: 18px;
+                    font-weight: 700;
+                }
+
+                .pf-payment-calendar-subtitle {
+                    color: var(--text-muted);
+                    font-size: 13px;
+                    margin-top: 3px;
+                }
+
+                .pf-payment-calendar-totals {
+                    display: flex;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                }
+
+                .pf-payment-calendar-totals div {
+                    border: 1px solid var(--border-color);
+                    background: var(--control-bg);
+                    border-radius: 10px;
+                    padding: 8px 10px;
+                    min-width: 120px;
+                }
+
+                .pf-payment-calendar-totals span {
+                    display: block;
+                    font-size: 11px;
+                    color: var(--text-muted);
+                    margin-bottom: 2px;
+                }
+
+                .pf-payment-calendar-totals strong {
+                    font-size: 14px;
+                }
+
+                .pf-payment-calendar-grid {
+                    display: grid;
+                    grid-template-columns: repeat(7, minmax(120px, 1fr));
+                    gap: 8px;
+                }
+
+                .pf-payment-calendar-weekdays {
+                    margin-bottom: 8px;
+                }
+
+                .pf-payment-calendar-weekdays div {
+                    text-align: center;
+                    color: var(--text-muted);
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .pf-payment-calendar-day {
+                    min-height: 112px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 10px;
+                    padding: 8px;
+                    background: var(--control-bg);
+                    overflow: hidden;
+                }
+
+                .pf-payment-calendar-day.empty {
+                    opacity: 0.35;
+                    background: transparent;
+                }
+
+                .pf-payment-calendar-day.has-payments {
+                    background: var(--card-bg);
+                }
+
+                .pf-payment-calendar-day-number {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 6px;
+                    margin-bottom: 6px;
+                    font-size: 12px;
+                    font-weight: 700;
+                }
+
+                .pf-payment-calendar-day-number strong {
+                    font-size: 11px;
+                    color: var(--text-muted);
+                    white-space: nowrap;
+                }
+
+                .pf-payment-calendar-item {
+                    border-radius: 8px;
+                    padding: 6px;
+                    margin-bottom: 6px;
+                    border: 1px solid var(--border-color);
+                    background: var(--bg-color);
+                }
+
+                .pf-payment-calendar-item.paid {
+                    opacity: 0.7;
+                }
+
+                .pf-payment-calendar-item.unpaid {
+                    border-left: 3px solid var(--orange-500);
+                }
+
+                .pf-payment-calendar-item-main {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 6px;
+                    align-items: flex-start;
+                }
+
+                .pf-payment-calendar-item-label {
+                    font-size: 11px;
+                    line-height: 1.25;
+                    font-weight: 600;
+                    overflow-wrap: anywhere;
+                }
+
+                .pf-payment-calendar-item-amount {
+                    font-size: 11px;
+                    white-space: nowrap;
+                    color: var(--text-muted);
+                }
+
+                .pf-payment-calendar-item-status {
+                    margin-top: 4px;
+                    font-size: 10px;
+                    color: var(--text-muted);
+                }
+
+                .pf-payment-calendar-empty {
+                    border: 1px dashed var(--border-color);
+                    border-radius: 12px;
+                    padding: 18px;
+                    color: var(--text-muted);
+                    background: var(--control-bg);
+                }
+
+                @media (max-width: 1200px) {
+                    .pf-payment-calendar-grid {
+                        grid-template-columns: repeat(7, minmax(90px, 1fr));
+                    }
+
+                    .pf-payment-calendar-day {
+                        min-height: 96px;
+                    }
+                }
+
+                @media (max-width: 900px) {
+                    .pf-payment-calendar-grid {
+                        display: block;
+                    }
+
+                    .pf-payment-calendar-weekdays {
+                        display: none;
+                    }
+
+                    .pf-payment-calendar-day {
+                        margin-bottom: 8px;
+                        min-height: auto;
+                    }
+
+                    .pf-payment-calendar-day.empty {
+                        display: none;
+                    }
+                }
+            `)
+            .appendTo("head");
+    },
 });
 
 
@@ -492,30 +845,37 @@ frappe.ui.form.on("Personal Finance Income Table", {
 frappe.ui.form.on("Personal Finance Expense Table", {
     expense_item(frm, cdt, cdn) {
         frm.trigger("schedule_total_recalculation");
+        frm.trigger("render_payment_calendar");
     },
 
     expense_amount(frm, cdt, cdn) {
         frm.trigger("schedule_total_recalculation");
+        frm.trigger("render_payment_calendar");
     },
 
     payment_date(frm, cdt, cdn) {
         frm.trigger("schedule_total_recalculation");
+        frm.trigger("render_payment_calendar");
     },
 
     payment_actual_date(frm, cdt, cdn) {
         frm.trigger("schedule_total_recalculation");
+        frm.trigger("render_payment_calendar");
     },
 
     payment_made(frm, cdt, cdn) {
         frm.trigger("schedule_total_recalculation");
+        frm.trigger("render_payment_calendar");
     },
 
     expenses_add(frm, cdt, cdn) {
         frm.trigger("schedule_total_recalculation");
+        frm.trigger("render_payment_calendar");
     },
 
     expenses_remove(frm, cdt, cdn) {
         frm.trigger("schedule_total_recalculation");
+        frm.trigger("render_payment_calendar");
     },
 
     make_payment(frm, cdt, cdn) {

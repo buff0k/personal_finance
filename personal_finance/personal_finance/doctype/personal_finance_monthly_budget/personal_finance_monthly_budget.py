@@ -132,6 +132,7 @@ class PersonalFinanceMonthlyBudget(Document):
 
         - Income is copied from the latest previous Monthly Budget.
         - Expenses are copied from the latest previous Monthly Budget.
+        - Income and expense dates are incremented by one month.
         - Asset, Savings and Debt snapshots are pulled from their singleton DocTypes.
 
         Payment completion fields are intentionally not copied.
@@ -626,7 +627,7 @@ def get_previous_income_snapshot(
         - income_amount
 
     Generates:
-        - income_date in the new budget month, because the field is required.
+        - income_date by incrementing the previous income_date by one month.
     """
 
     latest_budget_name = get_latest_monthly_budget_name()
@@ -646,7 +647,7 @@ def get_previous_income_snapshot(
             {
                 "income_item": row.get("income_item"),
                 "income_amount": row.get("income_amount"),
-                "income_date": shift_date_to_period(
+                "income_date": add_one_month_or_target_period(
                     source_date=row.get("income_date"),
                     target_year=target_year,
                     target_month_number=target_month_number,
@@ -670,7 +671,7 @@ def get_previous_expense_snapshot(
         - expense_amount
 
     Generates:
-        - payment_date in the new budget month, because the field is required.
+        - payment_date by incrementing the previous payment_date by one month.
 
     Resets:
         - payment_actual_date
@@ -694,7 +695,7 @@ def get_previous_expense_snapshot(
             {
                 "expense_item": row.get("expense_item"),
                 "expense_amount": row.get("expense_amount"),
-                "payment_date": shift_date_to_period(
+                "payment_date": add_one_month_or_target_period(
                     source_date=row.get("payment_date"),
                     target_year=target_year,
                     target_month_number=target_month_number,
@@ -708,33 +709,51 @@ def get_previous_expense_snapshot(
     return rows
 
 
-def shift_date_to_period(
+def add_one_month_or_target_period(
     source_date,
     target_year: int,
     target_month_number: int,
     fallback_day: int = 1,
 ):
     """
-    Returns a valid date in the target year/month.
+    If source_date exists:
+        return source_date + 1 calendar month, clamped to the valid day.
 
-    If source_date exists, its day is reused.
-    If the day does not exist in the target month, it is clamped to the last
-    valid day of the month.
-
-    Example:
-        31 Jan copied to February becomes 28/29 February.
+    If source_date is missing:
+        return target_year/target_month/fallback_day.
     """
-
-    max_day = monthrange(int(target_year), int(target_month_number))[1]
-
-    day = fallback_day
 
     if source_date:
         try:
-            day = getdate(source_date).day
-        except Exception:
-            day = fallback_day
+            source = getdate(source_date)
 
+            year = int(source.year)
+            month = int(source.month) + 1
+
+            if month > 12:
+                month = 1
+                year += 1
+
+            max_day = monthrange(year, month)[1]
+            day = min(int(source.day), max_day)
+
+            return date(year, month, day)
+        except Exception:
+            pass
+
+    return date_in_target_period(
+        target_year=target_year,
+        target_month_number=target_month_number,
+        day=fallback_day,
+    )
+
+
+def date_in_target_period(
+    target_year: int,
+    target_month_number: int,
+    day: int = 1,
+):
+    max_day = monthrange(int(target_year), int(target_month_number))[1]
     day = min(max(int(day), 1), max_day)
 
     return date(int(target_year), int(target_month_number), day)

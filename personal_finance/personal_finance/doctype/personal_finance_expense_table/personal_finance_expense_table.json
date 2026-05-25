@@ -12,7 +12,8 @@
   "payment_date",
   "make_payment",
   "payment_actual_date",
-  "payment_made"
+  "payment_made",
+  "comments"
  ],
  "fields": [
   {
@@ -61,13 +62,18 @@
    "fieldtype": "Check",
    "label": "Payment Made",
    "read_only": 1
+  },
+  {
+   "fieldname": "comments",
+   "fieldtype": "Small Text",
+   "label": "Comments"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-25 10:45:51.323185",
+ "modified": "2026-05-25 14:56:46.479064",
  "modified_by": "Administrator",
  "module": "Personal Finance",
  "name": "Personal Finance Expense Table",
