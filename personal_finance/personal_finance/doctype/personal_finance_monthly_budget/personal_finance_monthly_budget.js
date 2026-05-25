@@ -258,6 +258,7 @@ frappe.ui.form.on("Personal Finance Monthly Budget", {
             "nett_payroll_income",
             "nett_income",
             "total_expenses",
+            "outstanding_expenses",
             "available_balance",
             "total_assets",
             "total_debts",
@@ -366,6 +367,7 @@ frappe.ui.form.on("Personal Finance Monthly Budget", {
                     "nett_payroll_income",
                     "nett_income",
                     "total_expenses",
+                    "outstanding_expenses",
                     "available_balance",
                     "total_assets",
                     "total_debts",
@@ -497,6 +499,10 @@ frappe.ui.form.on("Personal Finance Expense Table", {
     },
 
     payment_date(frm, cdt, cdn) {
+        frm.trigger("schedule_total_recalculation");
+    },
+
+    payment_actual_date(frm, cdt, cdn) {
         frm.trigger("schedule_total_recalculation");
     },
 

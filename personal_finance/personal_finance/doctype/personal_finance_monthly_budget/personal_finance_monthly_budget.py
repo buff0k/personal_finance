@@ -165,6 +165,29 @@ class PersonalFinanceMonthlyBudget(Document):
     # -------------------------------------------------------------------------
 
     def calculate_totals(self):
+        """
+        total_income:
+            Sum of all income rows.
+
+        gross_payroll_income:
+            Sum of income rows where linked item has is_payroll_income checked.
+
+        nett_payroll_income:
+            gross_payroll_income less payroll expenses.
+
+        nett_income:
+            total_income less payroll expenses.
+
+        total_expenses:
+            Sum of all expense rows.
+
+        outstanding_expenses:
+            Sum of expense rows where payment_made is not checked.
+
+        available_balance:
+            current_bank_balance - outstanding_expenses.
+        """
+
         item_flags_cache = {}
 
         total_income = 0
@@ -181,7 +204,7 @@ class PersonalFinanceMonthlyBudget(Document):
 
         total_expenses = 0
         payroll_expenses = 0
-        non_bank_balance_expenses = 0
+        outstanding_expenses = 0
 
         for row in self.get("expenses") or []:
             amount = flt(row.get("expense_amount"))
@@ -192,8 +215,8 @@ class PersonalFinanceMonthlyBudget(Document):
             if flags.get("is_payroll_expense"):
                 payroll_expenses += amount
 
-            if not flags.get("current_bank_balance"):
-                non_bank_balance_expenses += amount
+            if not row.get("payment_made"):
+                outstanding_expenses += amount
 
         total_assets = 0
         for row in self.get("assets") or []:
@@ -209,7 +232,8 @@ class PersonalFinanceMonthlyBudget(Document):
             "nett_payroll_income": gross_payroll_income - payroll_expenses,
             "nett_income": total_income - payroll_expenses,
             "total_expenses": total_expenses,
-            "available_balance": flt(self.get("current_bank_balance")) - non_bank_balance_expenses,
+            "outstanding_expenses": outstanding_expenses,
+            "available_balance": flt(self.get("current_bank_balance")) - outstanding_expenses,
             "total_assets": total_assets,
             "total_debts": total_debts,
         }
@@ -304,6 +328,7 @@ def calculate_budget_totals(doc: str | dict) -> dict:
         "nett_payroll_income": flt(budget.get("nett_payroll_income")),
         "nett_income": flt(budget.get("nett_income")),
         "total_expenses": flt(budget.get("total_expenses")),
+        "outstanding_expenses": flt(budget.get("outstanding_expenses")),
         "available_balance": flt(budget.get("available_balance")),
         "total_assets": flt(budget.get("total_assets")),
         "total_debts": flt(budget.get("total_debts")),

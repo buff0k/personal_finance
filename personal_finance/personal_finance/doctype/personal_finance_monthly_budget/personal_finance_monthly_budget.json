@@ -23,6 +23,7 @@
   "nett_payroll_income",
   "nett_income",
   "total_expenses",
+  "outstanding_expenses",
   "current_bank_balance",
   "available_balance"
  ],
@@ -154,12 +155,19 @@
    "label": "Nett Income",
    "precision": "2",
    "read_only": 1
+  },
+  {
+   "fieldname": "outstanding_expenses",
+   "fieldtype": "Currency",
+   "label": "Outstanding Expenses",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-25 12:49:11.203346",
+ "modified": "2026-05-25 14:15:51.644359",
  "modified_by": "Administrator",
  "module": "Personal Finance",
  "name": "Personal Finance Monthly Budget",
