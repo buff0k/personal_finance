@@ -75,6 +75,11 @@ class PersonalFinanceDashboard {
                     </div>
 
                     <div class="pf-summary-card">
+                        <div class="pf-card-label">${__("Asset Portfolio")}</div>
+                        <div class="pf-card-value" data-field="asset_portfolio">-</div>
+                    </div>
+
+                    <div class="pf-summary-card">
                         <div class="pf-card-label">${__("Total Debts")}</div>
                         <div class="pf-card-value" data-field="total_debts">-</div>
                     </div>
@@ -85,7 +90,7 @@ class PersonalFinanceDashboard {
                     </div>
 
                     <div class="pf-summary-card">
-                        <div class="pf-card-label">${__("Debt to Asset Ratio")}</div>
+                        <div class="pf-card-label">${__("Debt to Asset Portfolio")}</div>
                         <div class="pf-card-value" data-field="debt_to_asset_ratio">-</div>
                     </div>
 
@@ -119,7 +124,7 @@ class PersonalFinanceDashboard {
                 <div class="pf-section">
                     <div class="pf-section-title">${__("Latest Monthly Budget")}</div>
 
-                    <div class="pf-chart-grid">
+                    <div class="pf-chart-grid two-column">
                         <div class="pf-chart-card">
                             <div class="pf-chart-title">${__("Income Breakdown")}</div>
                             <div id="pf-income-breakdown" class="pf-chart"></div>
@@ -182,8 +187,10 @@ class PersonalFinanceDashboard {
     render_summary(summary) {
         this.set_summary_value("total_assets", this.format_currency(summary.total_assets));
         this.set_summary_value("total_savings", this.format_currency(summary.total_savings));
+        this.set_summary_value("asset_portfolio", this.format_currency(summary.asset_portfolio));
         this.set_summary_value("total_debts", this.format_currency(summary.total_debts));
         this.set_summary_value("net_worth", this.format_currency(summary.net_worth));
+
         this.set_summary_value(
             "debt_to_asset_ratio",
             `${format_number(flt(summary.debt_to_asset_ratio), null, 2)}%`
@@ -258,6 +265,10 @@ class PersonalFinanceDashboard {
                     name: __("Nett Income"),
                     fieldname: "nett_income",
                 },
+                {
+                    name: __("Outstanding Expenses"),
+                    fieldname: "outstanding_expenses",
+                },
             ],
             "line",
             __("No income/expense trend data")
@@ -299,6 +310,10 @@ class PersonalFinanceDashboard {
                     fieldname: "current_bank_balance",
                 },
                 {
+                    name: __("Outstanding Expenses"),
+                    fieldname: "outstanding_expenses",
+                },
+                {
                     name: __("Available Balance"),
                     fieldname: "available_balance",
                 },
@@ -317,9 +332,21 @@ class PersonalFinanceDashboard {
             return;
         }
 
-        new frappe.Chart(container[0], {
+        const chart_id = selector.replace("#", "");
+        const chart_wrapper = $(`
+            <div class="pf-pie-wrapper">
+                <div class="pf-pie-chart-inner" id="${chart_id}-chart"></div>
+                <div class="pf-pie-custom-legend"></div>
+            </div>
+        `);
+
+        container.append(chart_wrapper);
+
+        const total = rows.reduce((sum, row) => sum + flt(row.value), 0);
+
+        new frappe.Chart(chart_wrapper.find(`#${chart_id}-chart`)[0], {
             data: {
-                labels: rows.map((row) => row.label),
+                labels: rows.map((row) => this.truncate_label(row.label, 24)),
                 datasets: [
                     {
                         values: rows.map((row) => flt(row.value)),
@@ -327,8 +354,29 @@ class PersonalFinanceDashboard {
                 ],
             },
             type: "pie",
-            height: 280,
+            height: 250,
             truncateLegends: true,
+        });
+
+        const legend = chart_wrapper.find(".pf-pie-custom-legend");
+
+        rows.forEach((row) => {
+            const value = flt(row.value);
+            const percentage = total ? (value / total) * 100 : 0;
+
+            legend.append(`
+                <div class="pf-pie-legend-row" title="${frappe.utils.escape_html(row.label)}">
+                    <div class="pf-pie-legend-label">
+                        ${frappe.utils.escape_html(this.truncate_label(row.label, 38))}
+                    </div>
+                    <div class="pf-pie-legend-value">
+                        ${this.format_currency(value)}
+                    </div>
+                    <div class="pf-pie-legend-percent">
+                        ${format_number(percentage, null, 1)}%
+                    </div>
+                </div>
+            `);
         });
     }
 
@@ -381,6 +429,16 @@ class PersonalFinanceDashboard {
 
     format_currency(value) {
         return format_currency(flt(value), frappe.defaults.get_default("currency"));
+    }
+
+    truncate_label(label, max_length) {
+        label = String(label || "");
+
+        if (label.length <= max_length) {
+            return label;
+        }
+
+        return `${label.slice(0, max_length - 1)}…`;
     }
 
     add_styles() {
@@ -445,8 +503,12 @@ class PersonalFinanceDashboard {
 
                 .pf-chart-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
                     gap: 16px;
+                }
+
+                .pf-chart-grid.two-column {
+                    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
                 }
 
                 .pf-chart-card,
@@ -457,6 +519,7 @@ class PersonalFinanceDashboard {
                     padding: 16px;
                     box-shadow: var(--shadow-sm);
                     margin-bottom: 16px;
+                    overflow: hidden;
                 }
 
                 .pf-chart-title {
@@ -466,11 +529,68 @@ class PersonalFinanceDashboard {
                 }
 
                 .pf-chart {
-                    min-height: 280px;
+                    min-height: 360px;
                 }
 
                 .pf-wide-chart {
                     min-height: 300px;
+                }
+
+                .pf-pie-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+                .pf-pie-chart-inner {
+                    min-height: 250px;
+                }
+
+                .pf-pie-chart-inner .chart-legend {
+                    display: none !important;
+                }
+
+                .pf-pie-custom-legend {
+                    border-top: 1px solid var(--border-color);
+                    padding-top: 10px;
+                    max-height: 210px;
+                    overflow-y: auto;
+                }
+
+                .pf-pie-legend-row {
+                    display: grid;
+                    grid-template-columns: minmax(120px, 1fr) auto auto;
+                    gap: 10px;
+                    align-items: center;
+                    padding: 6px 0;
+                    border-bottom: 1px solid var(--border-color);
+                    font-size: 12px;
+                }
+
+                .pf-pie-legend-row:last-child {
+                    border-bottom: none;
+                }
+
+                .pf-pie-legend-label {
+                    font-weight: 600;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .pf-pie-legend-value {
+                    color: var(--text-color);
+                    white-space: nowrap;
+                    text-align: right;
+                    font-variant-numeric: tabular-nums;
+                }
+
+                .pf-pie-legend-percent {
+                    color: var(--text-muted);
+                    white-space: nowrap;
+                    text-align: right;
+                    font-variant-numeric: tabular-nums;
+                    min-width: 48px;
                 }
 
                 .pf-empty {
@@ -482,6 +602,23 @@ class PersonalFinanceDashboard {
                     border: 1px dashed var(--border-color);
                     border-radius: 10px;
                     background: var(--control-bg);
+                }
+
+                @media (max-width: 768px) {
+                    .pf-chart-grid,
+                    .pf-chart-grid.two-column {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .pf-pie-legend-row {
+                        grid-template-columns: 1fr;
+                        gap: 2px;
+                    }
+
+                    .pf-pie-legend-value,
+                    .pf-pie-legend-percent {
+                        text-align: left;
+                    }
                 }
             `)
             .appendTo("head");

@@ -1,0 +1,125 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-25 18:21:07.876960",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_ypn6",
+  "amended_from",
+  "address",
+  "purchase_date",
+  "electricity_cost",
+  "purchase_price_incl",
+  "purchase_price_excl",
+  "tax",
+  "cost_of_units",
+  "attach"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_ypn6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Personal Finance Electricity Purchase",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "purchase_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date and Time of Purchase",
+   "reqd": 1
+  },
+  {
+   "fieldname": "electricity_cost",
+   "fieldtype": "Link",
+   "label": "Applicable Electricity Cost",
+   "link_filters": "[[\"Personal Finance Electricity Cost\",\"docstatus\",\"=\",\"1\"]]",
+   "options": "Personal Finance Electricity Cost",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cost_of_units",
+   "fieldtype": "Table",
+   "label": "Cost of Units",
+   "options": "Personal Finance Electricity Purchase Table",
+   "reqd": 1
+  },
+  {
+   "fieldname": "attach",
+   "fieldtype": "Attach",
+   "label": "Attach Proof of Purchase"
+  },
+  {
+   "fieldname": "tax",
+   "fieldtype": "Float",
+   "label": "Applicable Tax Rate (%)",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purchase_price_incl",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Purchase Price (Incl. Taxes)",
+   "non_negative": 1,
+   "precision": "4",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purchase_price_excl",
+   "fieldtype": "Currency",
+   "label": "Purchase Price (Excl. Taxes)",
+   "non_negative": 1,
+   "precision": "4",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-25 18:41:39.201543",
+ "modified_by": "Administrator",
+ "module": "Personal Finance",
+ "name": "Personal Finance Electricity Purchase",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

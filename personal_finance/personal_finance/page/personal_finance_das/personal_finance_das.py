@@ -17,6 +17,10 @@ def get_dashboard_data(months: int | str = 12) -> dict:
         - Personal Finance Savings singleton
         - Personal Finance Debts singleton
         - Personal Finance Monthly Budget history
+
+    Notes:
+        - Savings are treated as part of the total asset portfolio.
+        - Debts are stored as negative values.
     """
 
     months = int(months or 12)
@@ -30,18 +34,22 @@ def get_dashboard_data(months: int | str = 12) -> dict:
     total_savings = flt(savings.get("total"))
     total_debts = flt(debts.get("total"))
 
+    asset_portfolio = total_assets + total_savings
+
     # Debts are stored as negative values, so this works naturally.
-    net_worth = total_assets + total_savings + total_debts
+    net_worth = asset_portfolio + total_debts
 
     debt_exposure = abs(total_debts)
     debt_to_asset_ratio = 0
-    if total_assets:
-        debt_to_asset_ratio = (debt_exposure / total_assets) * 100
+
+    if asset_portfolio:
+        debt_to_asset_ratio = (debt_exposure / asset_portfolio) * 100
 
     return {
         "summary": {
             "total_assets": total_assets,
             "total_savings": total_savings,
+            "asset_portfolio": asset_portfolio,
             "total_debts": total_debts,
             "net_worth": net_worth,
             "debt_to_asset_ratio": debt_to_asset_ratio,
@@ -167,6 +175,7 @@ def get_monthly_budget_data(months: int = 12) -> dict:
             "nett_payroll_income",
             "nett_income",
             "total_expenses",
+            "outstanding_expenses",
             "available_balance",
             "current_bank_balance",
         ],
@@ -194,6 +203,7 @@ def get_monthly_budget_data(months: int = 12) -> dict:
                 "total_income": flt(budget.get("total_income")),
                 "total_expenses": flt(budget.get("total_expenses")),
                 "nett_income": flt(budget.get("nett_income")),
+                "outstanding_expenses": flt(budget.get("outstanding_expenses")),
             }
         )
 
@@ -211,6 +221,7 @@ def get_monthly_budget_data(months: int = 12) -> dict:
             {
                 "period": label,
                 "total_expenses": flt(budget.get("total_expenses")),
+                "outstanding_expenses": flt(budget.get("outstanding_expenses")),
             }
         )
 
@@ -219,6 +230,7 @@ def get_monthly_budget_data(months: int = 12) -> dict:
                 "period": label,
                 "available_balance": flt(budget.get("available_balance")),
                 "current_bank_balance": flt(budget.get("current_bank_balance")),
+                "outstanding_expenses": flt(budget.get("outstanding_expenses")),
             }
         )
 

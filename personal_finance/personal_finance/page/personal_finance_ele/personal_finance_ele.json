@@ -1,0 +1,26 @@
+{
+ "content": null,
+ "creation": "2026-05-25 19:12:50.490077",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2026-05-25 19:12:50.490077",
+ "modified_by": "Administrator",
+ "module": "Personal Finance",
+ "name": "personal-finance-ele",
+ "owner": "Administrator",
+ "page_name": "personal-finance-ele",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Personal Finance User"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 1,
+ "title": "Personal Finance Electricity Usage"
+}

@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-25 18:02:48.075784",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_fvsk",
+  "amended_from",
+  "address",
+  "reading_datetime",
+  "reading",
+  "applicable_electricity_cost",
+  "attach_evidence"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_fvsk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Personal Finance Electricity Meter Reading",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Address",
+   "options": "Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reading_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date and Time of Reading",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reading",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Reading",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "attach_evidence",
+   "fieldtype": "Attach",
+   "label": "Attach Evidence"
+  },
+  {
+   "fieldname": "applicable_electricity_cost",
+   "fieldtype": "Link",
+   "label": "Applicable Electricity Cost",
+   "link_filters": "[[\"Personal Finance Electricity Cost\",\"docstatus\",\"=\",\"1\"]]",
+   "options": "Personal Finance Electricity Cost",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-25 18:14:03.894997",
+ "modified_by": "Administrator",
+ "module": "Personal Finance",
+ "name": "Personal Finance Electricity Meter Reading",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Personal Finance User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
