@@ -1,0 +1,88 @@
+{
+ "app": "personal_finance",
+ "creation": "2026-05-25 08:32:27.556138",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "idx": 1,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "activity",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Dashboard",
+   "link_to": "personal-finance-das",
+   "link_type": "Page",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "money-coins-1",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Budget",
+   "link_to": "Personal Finance Monthly Budget",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "assets",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Assets",
+   "link_to": "Personal Finance Assets",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "trending-up",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Savings",
+   "link_to": "Personal Finance Savings",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "trending-down",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Debts",
+   "link_to": "Personal Finance Debts",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "align-end-vertical",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Item Maintenance",
+   "link_to": "Personal Finance Item",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-05-25 13:03:40.562334",
+ "modified_by": "Administrator",
+ "module": "Personal Finance",
+ "name": "Personal Finance",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "Personal Finance"
+}

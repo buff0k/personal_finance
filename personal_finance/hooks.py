@@ -4,6 +4,33 @@ app_publisher = "BuFf0k"
 app_description = "A personal finance application for Frappe that budgets my personal income, savings, nett-worth and debts, as well as prepaid electricity usage."
 app_email = "buff0k@gmail.com"
 app_license = "mit"
+source_link = "http://github.com/buff0k/personal_finance"
+app_logo_url = "/assets/personal_finance/images/personal_finance.png"
+app_home = "/desk/industrial-relations"
+add_to_apps_screen = [
+	{
+		"name": app_name,
+		"logo": "/assets/personal_finance/images/personal_finance.png",
+		"title": app_title,
+		"route": app_home,
+        "has_permission": "personal_finance.api.permission.has_app_permission"
+	}
+]
+
+fixtures = [
+    {
+        "dt": "Role",
+        "filters": [
+            ["role_name", "=", "Personal Finance User"]
+        ],
+    },
+    {
+        "dt": "Custom DocPerm",
+        "filters": [
+        ["role", "=", "Personal Finance User"]
+        ],
+    },
+]
 
 # Apps
 # ------------------

@@ -1,0 +1,200 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "creation": "2026-05-25 09:01:32.149320",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "year",
+  "month_number",
+  "period",
+  "income",
+  "assets",
+  "savings",
+  "debts",
+  "total_assets",
+  "total_debts",
+  "column_break_kiuz",
+  "month",
+  "expenses",
+  "total_income",
+  "gross_payroll_income",
+  "nett_payroll_income",
+  "nett_income",
+  "total_expenses",
+  "current_bank_balance",
+  "available_balance"
+ ],
+ "fields": [
+  {
+   "fieldname": "income",
+   "fieldtype": "Table",
+   "label": "Income",
+   "options": "Personal Finance Income Table"
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
+   "reqd": 1
+  },
+  {
+   "fieldname": "month_number",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Month Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "period",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Period",
+   "read_only": 1
+  },
+  {
+   "fieldname": "assets",
+   "fieldtype": "Table",
+   "label": "Assets",
+   "options": "Personal Finance Asset Table",
+   "read_only": 1
+  },
+  {
+   "fieldname": "debts",
+   "fieldtype": "Table",
+   "label": "Debts",
+   "options": "Personal Finance Debt Table",
+   "read_only": 1
+  },
+  {
+   "fieldname": "savings",
+   "fieldtype": "Table",
+   "label": "Savings",
+   "options": "Personal Finance Savings Table",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expenses",
+   "fieldtype": "Table",
+   "label": "Expenses",
+   "options": "Personal Finance Expense Table"
+  },
+  {
+   "fieldname": "column_break_kiuz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_income",
+   "fieldtype": "Currency",
+   "label": "Total Income",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_expenses",
+   "fieldtype": "Currency",
+   "label": "Total Expenses",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "available_balance",
+   "fieldtype": "Currency",
+   "label": "Available Balance",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_bank_balance",
+   "fieldtype": "Currency",
+   "label": "Current Bank Balance",
+   "precision": "2"
+  },
+  {
+   "fieldname": "total_assets",
+   "fieldtype": "Currency",
+   "label": "Total Assets",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_debts",
+   "fieldtype": "Currency",
+   "label": "Total Debts",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gross_payroll_income",
+   "fieldtype": "Currency",
+   "label": "Gross Payroll Income",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "nett_payroll_income",
+   "fieldtype": "Currency",
+   "label": "Nett Payroll Income",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "nett_income",
+   "fieldtype": "Currency",
+   "label": "Nett Income",
+   "precision": "2",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-05-25 12:49:11.203346",
+ "modified_by": "Administrator",
+ "module": "Personal Finance",
+ "name": "Personal Finance Monthly Budget",
+ "naming_rule": "By script",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Personal Finance User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

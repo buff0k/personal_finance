@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-25 09:27:50.171793",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "debts",
+  "total"
+ ],
+ "fields": [
+  {
+   "description": "Current Debts, note, debts are expressed as negative values (i.e. if you owe a creditor 10 000.00 then it should be recorded as -10 000.00.",
+   "fieldname": "debts",
+   "fieldtype": "Table",
+   "label": "Debts",
+   "options": "Personal Finance Debt Table"
+  },
+  {
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "label": "Total Debts",
+   "precision": "2",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-05-25 10:34:12.091628",
+ "modified_by": "Administrator",
+ "module": "Personal Finance",
+ "name": "Personal Finance Debts",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Personal Finance User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
