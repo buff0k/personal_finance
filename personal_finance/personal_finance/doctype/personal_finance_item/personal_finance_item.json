@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:item_name",
  "creation": "2026-05-25 08:56:01.816075",
@@ -85,7 +86,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-25 12:14:31.536881",
+ "modified": "2026-05-25 13:16:53.618655",
  "modified_by": "Administrator",
  "module": "Personal Finance",
  "name": "Personal Finance Item",
@@ -122,5 +123,6 @@
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "title_field": "item_name"
+ "title_field": "item_name",
+ "track_changes": 1
 }
