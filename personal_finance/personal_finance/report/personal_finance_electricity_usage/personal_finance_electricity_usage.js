@@ -47,6 +47,10 @@ frappe.query_reports["Personal Finance Electricity Usage"] = {
 			value = `<span style="color: var(--red-600); font-weight: 600;">${value}</span>`;
 		}
 
+		if (column.fieldname === "recommended_purchase_incl" && flt(data.recommended_purchase_incl) > 0) {
+			value = `<span style="color: var(--red-600); font-weight: 700;">${value}</span>`;
+		}
+
 		if (column.fieldname === "used_kwh" && flt(data.used_kwh) < 0) {
 			value = `<span style="color: var(--orange-600); font-weight: 600;">${value}</span>`;
 		}

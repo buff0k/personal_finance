@@ -36,10 +36,7 @@ class PersonalFinanceElectricityDashboard {
 		const style = document.createElement("style");
 		style.id = "personal-finance-ele-dashboard-style";
 		style.innerHTML = `
-			.ele-dashboard {
-				padding: 16px 4px 32px;
-			}
-
+			.ele-dashboard { padding: 16px 4px 32px; }
 			.ele-hero {
 				position: relative;
 				overflow: hidden;
@@ -53,41 +50,31 @@ class PersonalFinanceElectricityDashboard {
 				border: 1px solid var(--border-color);
 				box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 			}
-
 			.ele-hero-title {
 				font-size: 28px;
 				font-weight: 800;
 				letter-spacing: -0.03em;
 				margin: 0;
 			}
-
 			.ele-hero-subtitle {
 				margin-top: 8px;
 				color: var(--text-muted);
 				max-width: 820px;
 				font-size: 14px;
 			}
-
-			.ele-grid {
-				display: grid;
-				gap: 14px;
-			}
-
+			.ele-grid { display: grid; gap: 14px; }
 			.ele-kpi-grid {
-				grid-template-columns: repeat(6, minmax(150px, 1fr));
+				grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 				margin-bottom: 18px;
 			}
-
 			.ele-main-grid {
 				grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.8fr);
 				align-items: stretch;
 			}
-
 			.ele-two-grid {
 				grid-template-columns: repeat(2, minmax(0, 1fr));
 				margin-top: 14px;
 			}
-
 			.ele-card {
 				background: var(--card-bg);
 				border: 1px solid var(--border-color);
@@ -95,7 +82,6 @@ class PersonalFinanceElectricityDashboard {
 				padding: 16px;
 				box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
 			}
-
 			.ele-card-title {
 				font-size: 13px;
 				font-weight: 700;
@@ -104,77 +90,51 @@ class PersonalFinanceElectricityDashboard {
 				letter-spacing: 0.06em;
 				margin-bottom: 8px;
 			}
-
 			.ele-kpi-value {
 				font-size: 26px;
 				font-weight: 800;
 				letter-spacing: -0.03em;
 				line-height: 1.1;
 			}
-
 			.ele-kpi-subtitle {
 				margin-top: 6px;
 				font-size: 12px;
 				color: var(--text-muted);
 			}
-
-			.ele-good {
-				color: var(--green-600);
-			}
-
-			.ele-warn {
-				color: var(--orange-600);
-			}
-
-			.ele-bad {
-				color: var(--red-600);
-			}
-
-			.ele-chart-card {
-				min-height: 370px;
-			}
-
-			.ele-chart {
-				min-height: 300px;
-			}
-
+			.ele-good { color: var(--green-600); }
+			.ele-warn { color: var(--orange-600); }
+			.ele-bad { color: var(--red-600); }
+			.ele-chart-card { min-height: 370px; }
+			.ele-chart { min-height: 300px; }
 			.ele-list {
 				display: flex;
 				flex-direction: column;
 				gap: 10px;
 			}
-
 			.ele-list-item {
 				padding: 12px;
 				border-radius: 14px;
 				background: var(--control-bg);
 				border: 1px solid var(--border-color);
 			}
-
 			.ele-list-main {
 				display: flex;
 				justify-content: space-between;
 				gap: 12px;
 				align-items: baseline;
 			}
-
-			.ele-list-title {
-				font-weight: 700;
-			}
-
+			.ele-list-title { font-weight: 700; }
 			.ele-list-meta {
 				color: var(--text-muted);
 				font-size: 12px;
 				margin-top: 4px;
 			}
-
 			.ele-pill-row {
 				display: flex;
 				flex-wrap: wrap;
 				gap: 8px;
 				margin-top: 14px;
 			}
-
 			.ele-pill {
 				border-radius: 999px;
 				padding: 7px 11px;
@@ -183,7 +143,6 @@ class PersonalFinanceElectricityDashboard {
 				font-size: 12px;
 				color: var(--text-muted);
 			}
-
 			.ele-tip {
 				display: block;
 				text-decoration: none;
@@ -194,24 +153,20 @@ class PersonalFinanceElectricityDashboard {
 				border: 1px solid var(--border-color);
 				transition: transform 0.15s ease, box-shadow 0.15s ease;
 			}
-
 			.ele-tip:hover {
 				text-decoration: none;
 				transform: translateY(-1px);
 				box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
 			}
-
 			.ele-tip-title {
 				font-weight: 800;
 				margin-bottom: 4px;
 			}
-
 			.ele-tip-body {
 				color: var(--text-muted);
 				font-size: 12px;
 				line-height: 1.45;
 			}
-
 			.ele-empty {
 				padding: 26px;
 				border-radius: 18px;
@@ -220,7 +175,6 @@ class PersonalFinanceElectricityDashboard {
 				color: var(--text-muted);
 				text-align: center;
 			}
-
 			.ele-progress-track {
 				height: 14px;
 				border-radius: 999px;
@@ -229,7 +183,6 @@ class PersonalFinanceElectricityDashboard {
 				border: 1px solid var(--border-color);
 				margin-top: 14px;
 			}
-
 			.ele-progress-fill {
 				height: 100%;
 				border-radius: 999px;
@@ -237,26 +190,12 @@ class PersonalFinanceElectricityDashboard {
 				width: 0%;
 				transition: width 0.25s ease;
 			}
-
 			@media (max-width: 1200px) {
-				.ele-kpi-grid {
-					grid-template-columns: repeat(3, minmax(150px, 1fr));
-				}
-
-				.ele-main-grid {
-					grid-template-columns: 1fr;
-				}
+				.ele-main-grid { grid-template-columns: 1fr; }
 			}
-
 			@media (max-width: 760px) {
-				.ele-kpi-grid,
-				.ele-two-grid {
-					grid-template-columns: 1fr;
-				}
-
-				.ele-hero-title {
-					font-size: 23px;
-				}
+				.ele-two-grid { grid-template-columns: 1fr; }
+				.ele-hero-title { font-size: 23px; }
 			}
 		`;
 
@@ -319,7 +258,7 @@ class PersonalFinanceElectricityDashboard {
 			<section class="ele-hero">
 				<h1 class="ele-hero-title">⚡ Home energy cockpit</h1>
 				<div class="ele-hero-subtitle">
-					Track your balance, purchases, measured usage, and projected shortfall from your submitted meter readings and electricity purchases.
+					Track your balance, purchases, measured usage, projected shortfall, and the estimated amount to buy to reach your next purchase date.
 				</div>
 				<div class="ele-pill-row" id="ele-status-pills"></div>
 			</section>
@@ -333,7 +272,7 @@ class PersonalFinanceElectricityDashboard {
 				</div>
 
 				<div class="ele-card">
-					<div class="ele-card-title">Projection</div>
+					<div class="ele-card-title">Projection and purchase estimate</div>
 					<div id="ele-projection"></div>
 				</div>
 			</section>
@@ -365,21 +304,18 @@ class PersonalFinanceElectricityDashboard {
 	}
 
 	refresh() {
-		const address = this.address_control.get_value();
-
 		this.set_loading(true);
 
 		frappe.call({
 			method: this.method,
 			args: {
-				address: address || null,
+				address: this.address_control.get_value() || null,
 				from_date: this.from_date_control.get_value() || null,
 				to_date: this.to_date_control.get_value() || null,
 				set_date: this.set_date_control.get_value() || this.get_next_25th_date()
 			},
 			callback: (r) => {
-				const data = r.message || {};
-				this.render(data);
+				this.render(r.message || {});
 			},
 			error: () => {
 				frappe.msgprint(__("Could not load electricity dashboard data."));
@@ -423,6 +359,10 @@ class PersonalFinanceElectricityDashboard {
 			`Prediction: ${this.escape(filters.set_date || "")}`
 		];
 
+		if (stats.recommended_electricity_cost) {
+			pills.push(`Cost used: ${this.escape(stats.recommended_electricity_cost)}`);
+		}
+
 		if (message) {
 			pills.push(this.escape(message));
 		}
@@ -437,6 +377,7 @@ class PersonalFinanceElectricityDashboard {
 
 		const projected_balance = flt(stats.projected_balance);
 		const shortfall_units = flt(stats.shortfall_units);
+		const recommended_purchase_incl = flt(stats.recommended_purchase_incl);
 
 		const kpis = [
 			{
@@ -462,6 +403,12 @@ class PersonalFinanceElectricityDashboard {
 				value: `${this.format_number(shortfall_units, 2)} kWh`,
 				subtitle: shortfall_units > 0 ? "Top-up likely needed" : "No shortfall projected",
 				class_name: shortfall_units > 0 ? "ele-bad" : "ele-good"
+			},
+			{
+				title: "Buy needed",
+				value: this.format_currency(recommended_purchase_incl),
+				subtitle: `${this.format_number(stats.recommended_purchase_units, 2)} kWh estimated`,
+				class_name: recommended_purchase_incl > 0 ? "ele-bad" : "ele-good"
 			},
 			{
 				title: "Purchased",
@@ -494,6 +441,9 @@ class PersonalFinanceElectricityDashboard {
 		const projected_usage = flt(projection.projected_usage_to_set_date);
 		const projected_balance = flt(projection.projected_balance_at_set_date);
 		const shortfall = flt(projection.shortfall_units);
+		const recommended_purchase_incl = flt(projection.recommended_purchase_incl);
+		const recommended_purchase_excl = flt(projection.recommended_purchase_excl);
+		const recommended_purchase_units = flt(projection.recommended_purchase_units);
 
 		let usage_percent = 0;
 
@@ -502,6 +452,7 @@ class PersonalFinanceElectricityDashboard {
 		}
 
 		const balance_class = projected_balance >= 0 ? "ele-good" : "ele-bad";
+		const buy_class = recommended_purchase_incl > 0 ? "ele-bad" : "ele-good";
 
 		this.body.find("#ele-projection").html(`
 			<div class="ele-kpi-value ${balance_class}">
@@ -525,10 +476,21 @@ class PersonalFinanceElectricityDashboard {
 			<div class="ele-list" style="margin-top: 14px;">
 				<div class="ele-list-item">
 					<div class="ele-list-main">
+						<span class="ele-list-title">Recommended purchase</span>
+						<strong class="${buy_class}">${this.format_currency(recommended_purchase_incl)}</strong>
+					</div>
+					<div class="ele-list-meta">
+						${this.format_number(recommended_purchase_units, 2)} kWh · Excl. ${this.format_currency(recommended_purchase_excl)} · Cost used: ${this.escape(projection.recommended_electricity_cost || "N/A")}
+					</div>
+				</div>
+
+				<div class="ele-list-item">
+					<div class="ele-list-main">
 						<span class="ele-list-title">Average hourly use</span>
 						<strong>${this.format_number(projection.average_kwh_per_hour, 4)} kWh/h</strong>
 					</div>
 				</div>
+
 				<div class="ele-list-item">
 					<div class="ele-list-main">
 						<span class="ele-list-title">30-day projection</span>
@@ -550,37 +512,20 @@ class PersonalFinanceElectricityDashboard {
 			return;
 		}
 
-		const labels = intervals.map((row) => row.to_reading_datetime_display || "");
-		const daily_usage = intervals.map((row) => flt(row.kwh_per_day));
-		const end_balance = intervals.map((row) => flt(row.end_kwh));
-
 		this.charts.usage = new frappe.Chart(chart_target, {
 			title: "",
 			data: {
-				labels: labels,
+				labels: intervals.map((row) => row.to_reading_datetime_display || ""),
 				datasets: [
-					{
-						name: "kWh / Day",
-						values: daily_usage
-					},
-					{
-						name: "End kWh",
-						values: end_balance
-					}
+					{name: "kWh / Day", values: intervals.map((row) => flt(row.kwh_per_day))},
+					{name: "End kWh", values: intervals.map((row) => flt(row.end_kwh))}
 				]
 			},
 			type: "line",
 			height: 300,
 			colors: ["#00b894", "#0984e3"],
-			axisOptions: {
-				xAxisMode: "tick",
-				yAxisMode: "tick",
-				xIsSeries: true
-			},
-			lineOptions: {
-				regionFill: 1,
-				hideDots: 0
-			}
+			axisOptions: {xAxisMode: "tick", yAxisMode: "tick", xIsSeries: true},
+			lineOptions: {regionFill: 1, hideDots: 0}
 		});
 	}
 
@@ -600,14 +545,8 @@ class PersonalFinanceElectricityDashboard {
 			data: {
 				labels: monthly_purchases.map((row) => row.month),
 				datasets: [
-					{
-						name: "Units",
-						values: monthly_purchases.map((row) => flt(row.units))
-					},
-					{
-						name: "Amount Incl.",
-						values: monthly_purchases.map((row) => flt(row.amount_incl))
-					}
+					{name: "Units", values: monthly_purchases.map((row) => flt(row.units))},
+					{name: "Amount Incl.", values: monthly_purchases.map((row) => flt(row.amount_incl))}
 				]
 			},
 			type: "bar",
@@ -620,9 +559,7 @@ class PersonalFinanceElectricityDashboard {
 		const tips = this.data.tips || [];
 
 		if (!tips.length) {
-			this.body.find("#ele-tips").html(`
-				<div class="ele-empty">No tips available yet.</div>
-			`);
+			this.body.find("#ele-tips").html(`<div class="ele-empty">No tips available yet.</div>`);
 			return;
 		}
 
@@ -640,9 +577,7 @@ class PersonalFinanceElectricityDashboard {
 		const readings = this.data.recent_readings || [];
 
 		if (!readings.length) {
-			this.body.find("#ele-recent-readings").html(`
-				<div class="ele-empty">No submitted readings found.</div>
-			`);
+			this.body.find("#ele-recent-readings").html(`<div class="ele-empty">No submitted readings found.</div>`);
 			return;
 		}
 
@@ -663,9 +598,7 @@ class PersonalFinanceElectricityDashboard {
 		const purchases = this.data.recent_purchases || [];
 
 		if (!purchases.length) {
-			this.body.find("#ele-recent-purchases").html(`
-				<div class="ele-empty">No submitted purchases found.</div>
-			`);
+			this.body.find("#ele-recent-purchases").html(`<div class="ele-empty">No submitted purchases found.</div>`);
 			return;
 		}
 
@@ -685,9 +618,7 @@ class PersonalFinanceElectricityDashboard {
 	}
 
 	render_empty(selector, message) {
-		this.body.find(selector).html(`
-			<div class="ele-empty">${this.escape(message)}</div>
-		`);
+		this.body.find(selector).html(`<div class="ele-empty">${this.escape(message)}</div>`);
 	}
 
 	get_next_25th_date() {
