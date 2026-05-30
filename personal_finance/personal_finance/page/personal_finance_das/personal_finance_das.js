@@ -349,7 +349,6 @@ class PersonalFinanceDashboard {
 
         container.append(chart_wrapper);
 
-        const total = clean_rows.reduce((sum, row) => sum + flt(row.value), 0);
         const chart_target = chart_wrapper.find(".pf-pie-chart-inner")[0];
 
         this.charts[chart_key] = new frappe.Chart(chart_target, {
@@ -364,18 +363,10 @@ class PersonalFinanceDashboard {
             type: "pie",
             height: 250,
             truncateLegends: true,
-            tooltipOptions: {
-                formatTooltipY: (value) => {
-                    const numeric_value = flt(value);
-                    const percentage = total ? (numeric_value / total) * 100 : 0;
-
-                    return `${this.format_currency(numeric_value)} (${format_number(percentage, null, 1)}%)`;
-                },
-            },
+            colors: this.get_chart_colors(clean_rows.length),
         });
 
-        this.stabilise_pie_svg(chart_wrapper);
-        this.render_pie_legend(chart_wrapper, clean_rows, total);
+        this.render_pie_legend(chart_wrapper, clean_rows);
     }
 
     prepare_pie_rows(rows) {
@@ -403,47 +394,10 @@ class PersonalFinanceDashboard {
             .sort((a, b) => b.value - a.value);
     }
 
-    stabilise_pie_svg(chart_wrapper) {
-        const apply = () => {
-            const svg = chart_wrapper.find("svg");
-
-            svg.attr("preserveAspectRatio", "xMidYMid meet");
-            svg.css({
-                overflow: "visible",
-            });
-
-            chart_wrapper.find("svg path").each(function () {
-                const path = $(this);
-
-                path.css({
-                    "transform-box": "fill-box",
-                    "transform-origin": "center center",
-                });
-            });
-
-            chart_wrapper.find(".chart-legend").hide();
-        };
-
-        apply();
-
-        window.requestAnimationFrame(() => {
-            apply();
-        });
-
-        chart_wrapper.on("mouseleave", ".pf-pie-chart-inner", () => {
-            chart_wrapper.find("svg path").each(function () {
-                const path = $(this);
-
-                path.css({
-                    "transform-box": "fill-box",
-                    "transform-origin": "center center",
-                });
-            });
-        });
-    }
-
-    render_pie_legend(chart_wrapper, rows, total) {
+    render_pie_legend(chart_wrapper, rows) {
         const legend = chart_wrapper.find(".pf-pie-custom-legend");
+        const total = rows.reduce((sum, row) => sum + flt(row.value), 0);
+
         legend.empty();
 
         rows.forEach((row) => {
@@ -464,6 +418,49 @@ class PersonalFinanceDashboard {
                 </div>
             `);
         });
+    }
+
+    get_chart_colors(required_count) {
+        const base_colors = [
+            "#7cd6fd",
+            "#5e64ff",
+            "#743ee2",
+            "#ff5858",
+            "#ffa00a",
+            "#feef72",
+            "#28a745",
+            "#98d85b",
+            "#b554ff",
+            "#ff73b3",
+            "#6c7680",
+            "#36c2cf",
+            "#1abc9c",
+            "#2ecc71",
+            "#3498db",
+            "#9b59b6",
+            "#34495e",
+            "#f1c40f",
+            "#e67e22",
+            "#e74c3c",
+            "#95a5a6",
+            "#16a085",
+            "#27ae60",
+            "#2980b9",
+            "#8e44ad",
+            "#2c3e50",
+            "#f39c12",
+            "#d35400",
+            "#c0392b",
+            "#7f8c8d",
+        ];
+
+        const colors = [];
+
+        for (let i = 0; i < required_count; i++) {
+            colors.push(base_colors[i % base_colors.length]);
+        }
+
+        return colors;
     }
 
     make_axis_chart(selector, rows, label_field, series, chart_type, empty_message) {
@@ -636,26 +633,10 @@ class PersonalFinanceDashboard {
 
                 .pf-pie-chart-inner {
                     min-height: 250px;
-                    position: relative;
-                }
-
-                .pf-pie-chart-inner svg {
-                    overflow: visible !important;
-                }
-
-                .pf-pie-chart-inner svg path {
-                    transform-box: fill-box;
-                    transform-origin: center center;
                 }
 
                 .pf-pie-chart-inner .chart-legend {
                     display: none !important;
-                }
-
-                .pf-pie-chart-inner .graph-svg-tip,
-                .pf-wide-chart .graph-svg-tip {
-                    pointer-events: none;
-                    z-index: 20;
                 }
 
                 .pf-pie-custom-legend {
