@@ -6,28 +6,33 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "main_tab",
   "year",
   "month_number",
   "period",
-  "income",
-  "assets",
-  "savings",
-  "debts",
+  "total_income",
+  "nett_payroll_income",
+  "gross_payroll_income",
+  "nett_income",
   "total_assets",
   "total_debts",
   "column_break_kiuz",
   "month",
-  "expenses",
-  "total_income",
-  "gross_payroll_income",
-  "nett_payroll_income",
-  "nett_income",
   "total_expenses",
   "outstanding_expenses",
   "current_bank_balance",
   "available_balance",
   "section_break_lqxj",
-  "payment_calendar"
+  "payment_calendar",
+  "income_tab",
+  "income",
+  "expense_tab",
+  "expenses",
+  "assets_tab",
+  "assets",
+  "savings",
+  "liabilities_tab",
+  "debts"
  ],
  "fields": [
   {
@@ -173,12 +178,37 @@
    "fieldname": "payment_calendar",
    "fieldtype": "HTML",
    "read_only": 1
+  },
+  {
+   "fieldname": "main_tab",
+   "fieldtype": "Tab Break",
+   "label": "Main"
+  },
+  {
+   "fieldname": "income_tab",
+   "fieldtype": "Tab Break",
+   "label": "Income"
+  },
+  {
+   "fieldname": "expense_tab",
+   "fieldtype": "Tab Break",
+   "label": "Expense"
+  },
+  {
+   "fieldname": "assets_tab",
+   "fieldtype": "Tab Break",
+   "label": "Assets"
+  },
+  {
+   "fieldname": "liabilities_tab",
+   "fieldtype": "Tab Break",
+   "label": "Liabilities"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-25 14:51:06.722281",
+ "modified": "2026-05-30 13:38:39.300230",
  "modified_by": "Administrator",
  "module": "Personal Finance",
  "name": "Personal Finance Monthly Budget",

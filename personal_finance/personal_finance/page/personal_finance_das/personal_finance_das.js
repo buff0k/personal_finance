@@ -325,40 +325,126 @@ class PersonalFinanceDashboard {
 
     make_pie_chart(selector, rows, empty_message) {
         const container = this.wrapper.find(selector);
+        const chart_key = selector.replace("#", "");
+
         container.empty();
 
-        if (!rows || !rows.length) {
+        if (this.charts[chart_key]) {
+            delete this.charts[chart_key];
+        }
+
+        const clean_rows = this.prepare_pie_rows(rows);
+
+        if (!clean_rows.length) {
             container.html(`<div class="pf-empty">${empty_message}</div>`);
             return;
         }
 
-        const chart_id = selector.replace("#", "");
         const chart_wrapper = $(`
             <div class="pf-pie-wrapper">
-                <div class="pf-pie-chart-inner" id="${chart_id}-chart"></div>
+                <div class="pf-pie-chart-inner"></div>
                 <div class="pf-pie-custom-legend"></div>
             </div>
         `);
 
         container.append(chart_wrapper);
 
-        const total = rows.reduce((sum, row) => sum + flt(row.value), 0);
+        const total = clean_rows.reduce((sum, row) => sum + flt(row.value), 0);
+        const chart_target = chart_wrapper.find(".pf-pie-chart-inner")[0];
 
-        new frappe.Chart(chart_wrapper.find(`#${chart_id}-chart`)[0], {
+        this.charts[chart_key] = new frappe.Chart(chart_target, {
             data: {
-                labels: rows.map((row) => this.truncate_label(row.label, 24)),
+                labels: clean_rows.map((row) => this.truncate_label(row.label, 24)),
                 datasets: [
                     {
-                        values: rows.map((row) => flt(row.value)),
+                        values: clean_rows.map((row) => flt(row.value)),
                     },
                 ],
             },
             type: "pie",
             height: 250,
             truncateLegends: true,
+            tooltipOptions: {
+                formatTooltipY: (value) => {
+                    const numeric_value = flt(value);
+                    const percentage = total ? (numeric_value / total) * 100 : 0;
+
+                    return `${this.format_currency(numeric_value)} (${format_number(percentage, null, 1)}%)`;
+                },
+            },
         });
 
+        this.stabilise_pie_svg(chart_wrapper);
+        this.render_pie_legend(chart_wrapper, clean_rows, total);
+    }
+
+    prepare_pie_rows(rows) {
+        const combined = {};
+
+        (rows || []).forEach((row) => {
+            const label = String(row.label || __("Unspecified")).trim() || __("Unspecified");
+            const value = flt(row.value);
+
+            if (!Number.isFinite(value) || value <= 0) {
+                return;
+            }
+
+            combined[label] = flt(combined[label]) + value;
+        });
+
+        return Object.keys(combined)
+            .map((label) => {
+                return {
+                    label: label,
+                    value: flt(combined[label]),
+                };
+            })
+            .filter((row) => row.value > 0)
+            .sort((a, b) => b.value - a.value);
+    }
+
+    stabilise_pie_svg(chart_wrapper) {
+        const apply = () => {
+            const svg = chart_wrapper.find("svg");
+
+            svg.attr("preserveAspectRatio", "xMidYMid meet");
+            svg.css({
+                overflow: "visible",
+            });
+
+            chart_wrapper.find("svg path").each(function () {
+                const path = $(this);
+
+                path.css({
+                    "transform-box": "fill-box",
+                    "transform-origin": "center center",
+                });
+            });
+
+            chart_wrapper.find(".chart-legend").hide();
+        };
+
+        apply();
+
+        window.requestAnimationFrame(() => {
+            apply();
+        });
+
+        chart_wrapper.on("mouseleave", ".pf-pie-chart-inner", () => {
+            chart_wrapper.find("svg path").each(function () {
+                const path = $(this);
+
+                path.css({
+                    "transform-box": "fill-box",
+                    "transform-origin": "center center",
+                });
+            });
+        });
+    }
+
+    render_pie_legend(chart_wrapper, rows, total) {
         const legend = chart_wrapper.find(".pf-pie-custom-legend");
+        legend.empty();
 
         rows.forEach((row) => {
             const value = flt(row.value);
@@ -382,14 +468,20 @@ class PersonalFinanceDashboard {
 
     make_axis_chart(selector, rows, label_field, series, chart_type, empty_message) {
         const container = this.wrapper.find(selector);
+        const chart_key = selector.replace("#", "");
+
         container.empty();
+
+        if (this.charts[chart_key]) {
+            delete this.charts[chart_key];
+        }
 
         if (!rows || !rows.length) {
             container.html(`<div class="pf-empty">${empty_message}</div>`);
             return;
         }
 
-        new frappe.Chart(container[0], {
+        this.charts[chart_key] = new frappe.Chart(container[0], {
             data: {
                 labels: rows.map((row) => row[label_field]),
                 datasets: series.map((item) => {
@@ -544,10 +636,26 @@ class PersonalFinanceDashboard {
 
                 .pf-pie-chart-inner {
                     min-height: 250px;
+                    position: relative;
+                }
+
+                .pf-pie-chart-inner svg {
+                    overflow: visible !important;
+                }
+
+                .pf-pie-chart-inner svg path {
+                    transform-box: fill-box;
+                    transform-origin: center center;
                 }
 
                 .pf-pie-chart-inner .chart-legend {
                     display: none !important;
+                }
+
+                .pf-pie-chart-inner .graph-svg-tip,
+                .pf-wide-chart .graph-svg-tip {
+                    pointer-events: none;
+                    z-index: 20;
                 }
 
                 .pf-pie-custom-legend {
