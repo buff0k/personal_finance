@@ -6,7 +6,7 @@ app_email = "buff0k@gmail.com"
 app_license = "mit"
 source_link = "http://github.com/buff0k/personal_finance"
 app_logo_url = "/assets/personal_finance/images/personal_finance.png"
-app_home = "/desk/industrial-relations"
+app_home = "/desk/personal-finance-das"
 add_to_apps_screen = [
 	{
 		"name": app_name,
